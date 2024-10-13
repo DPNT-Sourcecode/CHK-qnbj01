@@ -31,14 +31,15 @@ def checkout(skus):
         item_counts[sku] += 1
 
     for item, count in item_counts.items():
-    if item in special_offers:
-        offer_qty, offer_price = special_offers[item]
-        total += (count // offer_qty) * offer_price
-        total += (count % offer_qty) * prices[item]
-    else:
-        total += count * prices[item]
+        if item in special_offers:
+            offer_qty, offer_price = special_offers[item]
+            total += (count // offer_qty) * offer_price
+            total += (count % offer_qty) * prices[item]
+        else:
+            total += count * prices[item]
 
-return total
+    return total
+
 
 
 
