@@ -193,9 +193,13 @@ def checkout(skus):
             item_counts[free_item] = max(0, item_counts[free_item] - free_count)
 
     for item, count in item_counts.items():
-        if item in ['F', 'U']:
-            total += (count // 3) * prices[item] * 2
+        if item == 'F':
+            total += (count // 3) * prices['F'] * 2
             count %= 3
+
+        elif item == 'U':
+            total += (count // 4) * prices['U'] * 3
+            count %= 4
 
         elif item in special_offers:
             offers = special_offers[item]
@@ -210,6 +214,4 @@ def checkout(skus):
         total += count * prices[item]
 
     return total
-
-
 
