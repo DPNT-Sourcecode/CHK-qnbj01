@@ -127,9 +127,6 @@ def checkout(skus):
             return -1
         item_counts[sku] += 1
 
-    if item_counts['F'] % 3 != 0:
-        return -1
-
     if item_counts['E'] > 0:
         total += (item_counts['E'] // 2) * prices['E'] * 2
         total += (item_counts['E'] % 2) * prices['E']
@@ -149,8 +146,11 @@ def checkout(skus):
 
     if item_counts['F'] > 0:
         total += (item_counts['F'] // 3) * prices['F'] * 2
+        total += (item_counts['F'] % 3) * prices['F']
 
     total += item_counts['C'] * prices['C']
     total += item_counts['D'] * prices['D']
 
     return total
+
+
