@@ -154,5 +154,3 @@ def checkout(skus):
     total += item_counts['D'] * prices['D']
 
     return total
-
-
