@@ -215,5 +215,82 @@ def checkout(skus):
 
     return total
 
+#=========================================================================================================
+def checkout(skus):
+    prices = {
+        'A': 50,  'B': 30,  'C': 20,  'D': 15,  'E': 40,  'F': 10,  'G': 20,
+        'H': 10,  'I': 35,  'J': 60,  'K': 70,  'L': 90,  'M': 15,  'N': 40,
+        'O': 10,  'P': 50,  'Q': 30,  'R': 50,  'S': 20,  'T': 20,  'U': 40,
+        'V': 50,  'W': 20,  'X': 17,  'Y': 20,  'Z': 21
+    }
+
+    special_offers = {
+        'A': [(5, 200), (3, 130)],
+        'B': (2, 45),
+        'H': [(10, 80), (5, 45)],
+        'K': (2, 120),
+        'P': (5, 200),
+        'Q': (3, 80),
+        'V': [(3, 130), (2, 90)],
+    }
+
+    free_item_offers = {
+        'E': ('B', 2),
+        'N': ('M', 3),
+        'R': ('Q', 3),
+        'F': ('F', 2),
+        'U': ('U', 3),
+    }
+
+    group_discount_items = ['S', 'T', 'X', 'Y', 'Z']
+
+    item_counts = {item: 0 for item in prices}
+
+    total = 0
+
+    for sku in skus:
+        if sku not in prices:
+            return -1
+        item_counts[sku] += 1
+
+    for offer_item, (free_item, required_count) in free_item_offers.items():
+        if item_counts[offer_item] > 0:
+            free_count = item_counts[offer_item] // required_count
+            if free_item == offer_item:
+                total += (item_counts[offer_item] // (required_count + 1)) * prices[offer_item] * required_count
+                item_counts[offer_item] %= (required_count + 1)
+            else:
+                item_counts[free_item] = max(0, item_counts[free_item] - free_count)
+
+    group_item_count = sum(item_counts[item] for item in group_discount_items)
+    total += (group_item_count // 3) * 45
+    remaining_group_items = group_item_count % 3
+
+    for item in group_discount_items:
+        if remaining_group_items == 0:
+            break
+        if item_counts[item] > 0:
+            if item_counts[item] >= remaining_group_items:
+                total += remaining_group_items * prices[item]
+                remaining_group_items = 0
+            else:
+                total += item_counts[item] * prices[item]
+                remaining_group_items -= item_counts[item]
+
+    for item, count in item_counts.items():
+        if item in special_offers:
+            offers = special_offers[item]
+            if isinstance(offers, list):
+                for offer_qty, offer_price in offers:
+                    total += (count // offer_qty) * offer_price
+                    count %= offer_qty
+            else:
+                total += (count // offers[0]) * offers[1]
+                count %= offers[0]
+
+        total += count * prices[item]
+
+    return total
+
 
 
