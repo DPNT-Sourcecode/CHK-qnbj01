@@ -291,7 +291,6 @@ def checkout(skus):
         total += count * prices[item]
 
     return total
-PYTHONPATH=lib python lib/send_command_to_server.py
 
 
 
