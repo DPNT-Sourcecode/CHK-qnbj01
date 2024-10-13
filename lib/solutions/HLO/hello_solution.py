@@ -6,3 +6,7 @@ def hello(friend_name):
     return "Hello, World!"
 
 
+def hello(friend_name):
+    return f"Hello, {friend_name}!"
+
+
