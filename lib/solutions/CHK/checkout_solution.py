@@ -93,6 +93,8 @@ def checkout(skus):
         else:
             total += count * prices[item]
 
-    total += item_counts['B'] * prices['B']
+        if item_counts['B'] > 0:
+            total += item_counts['B'] * prices['B']
 
     return total
+
