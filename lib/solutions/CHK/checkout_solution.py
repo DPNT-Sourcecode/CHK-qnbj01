@@ -266,28 +266,30 @@ def checkout(skus):
     total += (group_item_count // 3) * 45
     remaining_group_items = group_item_count % 3
 
-    for item in group_discount_items:
-        if remaining_group_items == 0:
-            break
-        if item_counts[item] > 0:
+    if remaining_group_items > 0:
+        remaining_items = [(item, prices[item]) for item in group_discount_items if item_counts[item] > 0]
+        remaining_items.sort(key=lambda x: x[1])
+        for item, price in remaining_items:
+            if remaining_group_items == 0:
+                break
             if item_counts[item] >= remaining_group_items:
-                total += remaining_group_items * prices[item]
+                total += remaining_group_items * price
                 remaining_group_items = 0
             else:
-                total += item_counts[item] * prices[item]
+                total += item_counts[item] * price
                 remaining_group_items -= item_counts[item]
 
     for item, count in item_counts.items():
-        if item in special_offers:
-            offers = special_offers[item]
-            if isinstance(offers, list):
-                for offer_qty, offer_price in offers:
-                    total += (count // offer_qty) * offer_price
-                    count %= offer_qty
-            else:
-                total += (count // offers[0]) * offers[1]
-                count %= offers[0]
-
-        total += count * prices[item]
+        if item not in group_discount_items:
+            if item in special_offers:
+                offers = special_offers[item]
+                if isinstance(offers, list):
+                    for offer_qty, offer_price in offers:
+                        total += (count // offer_qty) * offer_price
+                        count %= offer_qty
+                else:
+                    total += (count // offers[0]) * offers[1]
+                    count %= offers[0]
+            total += count * prices[item]
 
     return total
