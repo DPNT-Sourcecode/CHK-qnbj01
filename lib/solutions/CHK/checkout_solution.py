@@ -176,6 +176,8 @@ def checkout(skus):
         'E': ('B', 2),
         'N': ('M', 3),
         'R': ('Q', 3),
+        'F': ('F', 2),
+        'U': ('U', 3),
     }
 
     item_counts = {item: 0 for item in prices}
@@ -189,19 +191,11 @@ def checkout(skus):
 
     for offer_item, (free_item, required_count) in free_item_offers.items():
         if item_counts[offer_item] > 0:
-            free_count = item_counts[offer_item] // required_count
+            free_count = item_counts[offer_item] // (required_count + 1)
             item_counts[free_item] = max(0, item_counts[free_item] - free_count)
 
     for item, count in item_counts.items():
-        if item == 'F':
-            total += (count // 3) * prices['F'] * 2
-            count %= 3
-
-        elif item == 'U':
-            total += (count // 4) * prices['U'] * 3
-            count %= 4
-
-        elif item in special_offers:
+        if item in special_offers:
             offers = special_offers[item]
             if isinstance(offers, list):
                 for offer_qty, offer_price in offers:
@@ -214,4 +208,5 @@ def checkout(skus):
         total += count * prices[item]
 
     return total
+
 
